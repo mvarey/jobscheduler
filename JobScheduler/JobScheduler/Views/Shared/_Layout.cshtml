@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Job Scheduler</title>
+    <link href="~/Content/jquery.timepicker.css" rel="stylesheet" />
+    <link href="~/Content/themes/base/jquery-ui.css" rel="stylesheet" />
+    <link href="~/Content/Site.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.timepicker.js"></script>
+    <script src="~/Scripts/jquery-1.12.4.js"></script>
+    <script src="~/Scripts/jquery-ui-1.12.1.js"></script>
+</head>
+<body>
+    <div class="content-wrapper" style="align-content:center; width:100%; ">
+        <table style="padding:0px; margin:0px; border:none; border-spacing:0; width:100%;" cellpadding="0" cellspacing="0">
+            <tr>
+                <td style="vertical-align:top;width:100%;margin:0px;padding:0px;">
+                    <a href="Index"><img src="@ViewBag.MainImage" height="50" width="200" alt="Logo" /></a>
+                </td>
+            </tr>
+        </table>
+        @Html.Raw(ViewBag.Menu)
+    </div>
+    <div class="container body-content" style="height:820px;">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Mike's Minions Job Scheduler</p>
+        </footer>
+    </div>
+
+    @RenderSection("scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,568 @@
+﻿@model SchedulerModel
+
+@{
+    ViewBag.Title = "Scheduler";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script type="text/javascript">
+    $(function () {
+        $("#SpecificDate").datepicker();
+    });
+    $(function () {
+        $("#StartTime").timepicker();
+    })
+    $(function () {
+        $("#EndTime").timepicker();
+    })
+    //$(function () {
+    //    $("#EndDate").datepicker();
+    //});
+</script>
+
+<div style="display:@Model.ShowQueue;">
+    @using (Html.BeginForm("Scheduler", "Scheduler", FormMethod.Post))
+    {
+        <h2>Scheduler</h2>
+        <table>
+            <tr>
+                <td colspan="2" class="bt" style="color:red;">&nbsp;@Html.Raw(Model.QueueMessage)</td>
+            </tr>
+            <tr>
+                <td class="bt">Queue Name</td>
+                <td class="gfill">@Html.TextBoxFor(m => m.QueueName, new { style="width:500px;", maxlength=100 })</td>
+            </tr>
+            <tr>
+                <td class="bt">Is Active</td>
+                <td class="gfill">@Html.CheckBoxFor(m => m.QueueIsActive)</td>
+            </tr>
+            <tr>
+                <td class="bt">Is Running</td>
+                <td class="gfill">@Html.CheckBoxFor(m => m.QueueIsRunning)</td>
+            </tr>
+            <tr>
+                <td class="bt">Max Threads</td>
+                <td class="gfill">@Html.TextBoxFor(m => m.MaxThreads, new { maxlength = 3 })</td>
+            </tr>
+            <tr>
+                <td class="bt">Max Minutes</td>
+                <td class="gfill">@Html.TextBoxFor(m => m.MaxMinutes, new { maxlength = 3 })</td>
+            </tr>
+            <tr>
+                <td class="bt"></td>
+                <td class="bt">
+                    <button name="btnQueueSave" class="button" type="submit" style="display:@Model.ShowSaveButtons;">Save</button>&nbsp;
+                    <button name="btnQueueClear" class="button" type="submit" >Clear</button>&nbsp;
+                    <button name="btnAgents" class="button" type="submit" style="display:@Model.ShowQueueButtons;">Agents</button>&nbsp;
+                    <button name="btnFolders" class="button" type="submit" style="display:@Model.ShowQueueButtons;">Folders</button>
+                    @Html.HiddenFor(m => m.QueueID)
+                    @Html.HiddenFor(m => m.ShowAgent)
+                    @Html.HiddenFor(m => m.ShowAgentButtons)
+                    @Html.HiddenFor(m => m.ShowExclusion)
+                    @Html.HiddenFor(m => m.ShowFolder)
+                    @Html.HiddenFor(m => m.ShowFolderButtons)
+                    @Html.HiddenFor(m => m.ShowInterval)
+                    @Html.HiddenFor(m => m.ShowJob)
+                    @Html.HiddenFor(m => m.ShowJobButtons)
+                    @Html.HiddenFor(m => m.ShowQueueButtons)
+                    @Html.HiddenFor(m => m.ShowSaveButtons)
+                    @Html.HiddenFor(m => m.ShowTask)
+                    @Html.HiddenFor(m => m.ShowVariable)
+                </td>
+            </tr>
+        </table>
+        @Html.Raw(Model.QueueList)
+
+        <div style="position:absolute; top:0; right:0; background-color:black; opacity: 0.2;
+                height:100%; width:100%; display:@Model.ShowAgent;">
+        </div>
+        <div style="background-color:white; position:absolute; top:50px; left:100px; display:@Model.ShowAgent;">
+            <table>
+                <tr>
+                    <td colspan="2"><h3>Agents</h3></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="bt" style="color:red;">&nbsp;@Html.Raw(Model.AgentMessage)</td>
+                </tr>
+                <tr>
+                    <td class="bt">Server</td>
+                    <td class="gfill">@Html.DropDownListFor(m => m.ServerID, Model.Servers)</td>
+                </tr>
+                <tr>
+                    <td class="bt">Is Active</td>
+                    <td class="gfill">@Html.CheckBoxFor(m => m.AgentIsActive)</td>
+                </tr>
+                <tr>
+                    <td class="bt"></td>
+                    <td class="bt">
+                        <button name="btnAgentSave" class="button" type="submit" style="display:@Model.ShowSaveButtons;">Save</button>&nbsp;
+                        <button name="btnAgentClear" class="button" type="submit">Clear</button>&nbsp;
+                        <button name="btnAgentClose" class="button" type="submit">Close</button>&nbsp;
+                        <button name="btnExclusions" class="button" type="submit" style="display:@Model.ShowAgentButtons;">Exclusions</button>
+                        @Html.HiddenFor(m => m.AgentID)
+                    </td>
+                </tr>
+            </table>
+            @Html.Raw(Model.AgentList)
+        </div>
+
+        <div style="position:absolute; top:0; right:0; background-color:black; opacity: 0.2;
+                height:100%; width:100%; display:@Model.ShowExclusion;">
+        </div>
+        <div style="background-color:white; position:absolute; top:50px; left:100px; display:@Model.ShowExclusion;">
+            <table>
+                <tr>
+                    <td colspan="2"><h3>Exclusions</h3></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="bt" style="color:red;">&nbsp;@Html.Raw(Model.ExclusionMessage)</td>
+                </tr>
+                <tr>
+                    <td class="bt">Days Of Week</td>
+                    <td class="gfill">
+                        Sunday: @Html.CheckBoxFor(m => m.Sunday) &nbsp;&nbsp;Monday: @Html.CheckBoxFor(m => m.Monday) &nbsp;&nbsp;
+                        Tuesday: @Html.CheckBoxFor(m => m.Tuesday) &nbsp;&nbsp;Wednesday: @Html.CheckBoxFor(m => m.Wednesday)<br/>
+                        Thursday: @Html.CheckBoxFor(m => m.Thursday) &nbsp;&nbsp;Friday: @Html.CheckBoxFor(m => m.Friday) &nbsp;&nbsp;
+                        Saturday: @Html.CheckBoxFor(m => m.Saturday)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="bt">Start Time</td>
+                    <td class="gfill">@Html.TextBoxFor(m => m.StartTime, new { style = "width:100px;", maxlength = 10 })</td>
+                </tr>
+                <tr>
+                    <td class="bt">End Time</td>
+                    <td class="gfill">@Html.TextBoxFor(m => m.EndTime, new { style = "width:100px;", maxlength = 10 })</td>
+                </tr>
+                <tr>
+                    <td class="bt">Specific Date</td>
+                    <td class="gfill">@Html.TextBoxFor(m => m.SpecificDate, new { style = "width:100px;", maxlength = 10 })</td>
+                </tr>
+                <tr>
+                    <td class="bt">Is Active</td>
+                    <td class="gfill">@Html.CheckBoxFor(m => m.ExclusionIsActive)</td>
+                </tr>
+                <tr>
+                    <td class="bt">Is Global</td>
+                    <td class="gfill">@Html.CheckBoxFor(m => m.IsGlobal)</td>
+                </tr>
+                <tr>
+                    <td class="bt"></td>
+                    <td class="bt">
+                        <button name="btnExclusionSave" class="button" type="submit" style="display:@Model.ShowSaveButtons;">Save</button>&nbsp;
+                        <button name="btnExclusionClear" class="button" type="submit">Clear</button>&nbsp;
+                        <button name="btnExclusionClose" class="button" type="submit">Close</button>&nbsp;
+                        @Html.HiddenFor(m => m.ExclusionID)
+                    </td>
+                </tr>
+            </table>
+            @Html.Raw(Model.ExclusionList)
+        </div>
+
+        <div style="position:absolute; top:0; right:0; background-color:black; opacity: 0.2;
+                height:100%; width:100%; display:@Model.ShowFolder;">
+        </div>
+        <div style="background-color:white; position:absolute; top:50px; left:100px; display:@Model.ShowFolder;">
+            <table>
+                <tr>
+                    <td colspan="2"><h3>Folders</h3></td>
+                </tr>
+                <tr>
+                    <td colspan="2">&nbsp;@Html.Raw(Model.FolderMessage)</td>
+                </tr>
+                <tr>
+                    <td class="bt">Folder Name</td>
+                    <td class="gfill">@Html.TextBoxFor(m => m.FolderName, new { style="width:500px;", maxlength=100 })</td>
+                </tr>
+                <tr>
+                    <td class="bt">Parent Folder</td>
+                    <td class="gfill">@Html.DropDownListFor(m => m.ParentFolderId, Model.ParentFolders)</td>
+                </tr>
+                <tr>
+                    <td class="bt">Is Active</td>
+                    <td class="gfill">@Html.CheckBoxFor(m => m.FolderIsActive)</td>
+                </tr>
+                <tr>
+                    <td class="bt">Sort Order</td>
+                    <td class="gfill">@Html.TextBoxFor(m => m.FolderSortOrder, new { style = "width:60px;", maxlength = 5 })</td>
+                </tr>
+                <tr>
+                    <td class="bt"></td>
+                    <td class="bt">
+                        <button name="btnFolderSave" class="button" type="submit" style="display:@Model.ShowSaveButtons;">Save</button>&nbsp;
+                        <button name="btnFolderClear" class="button" type="submit">Clear</button>&nbsp;
+                        <button name="btnFolderClose" class="button" type="submit">Close</button>&nbsp;
+                        <button name="btnVariables" class="button" type="submit" style="display:@Model.ShowFolderButtons;">Variables</button>&nbsp;
+                        <button name="btnJobs" class="button" type="submit" style="display:@Model.ShowFolderButtons;">Jobs</button>
+                        @Html.HiddenFor(m => m.FolderId)
+                    </td>
+                </tr>
+            </table>
+            @Html.Raw(Model.FolderList)
+        </div>
+
+        <div style="position:absolute; top:0; right:0; background-color:black; opacity: 0.2;
+                height:100%; width:100%; display:@Model.ShowVariable;">
+        </div>
+        <div style="background-color:white; position:absolute; top:50px; left:100px; display:@Model.ShowVariable;">
+            <table>
+                <tr>
+                    <td colspan="2"><h3>Variables</h3></td>
+                </tr>
+                <tr>
+                    <td class="bt" colspan="2" style="color:red;">&nbsp;@Html.Raw(Model.VariableMessage)</td>
+                </tr>
+                <tr>
+                    <td class="bt">Variable Name</td>
+                    <td class="gfill">@Html.TextBoxFor(m => m.VariableName, new { style="width:500px;", maxlength=100 })</td>
+                </tr>
+                <tr>
+                    <td class="bt">Value</td>
+                    <td class="gfill">@Html.TextAreaFor(m => m.VariableValue, new { style="width:500px; height:100px;", maxlength=1000 })</td>
+                </tr>
+                <tr>
+                    <td class="bt">Description</td>
+                    <td class="gfill">@Html.TextAreaFor(m => m.VariableDescription, new { style="width:500px; height:100px;", maxlength=1000 })</td>
+                </tr>
+                <tr>
+                    <td class="bt">Is Active</td>
+                    <td class="gfill">@Html.CheckBoxFor(m => m.VariableIsActive)</td>
+                </tr>
+                <tr>
+                    <td class="bt">Sort Order</td>
+                    <td class="gfill">@Html.TextBoxFor(m => m.VariableSortOrder, new { style="width:60px;", maxlength=5 })</td>
+                </tr>
+                <tr>
+                    <td class="bt"></td>
+                    <td class="bt">
+                        <button name="btnVariableSave" class="button" type="submit" style="display:@Model.ShowSaveButtons;">Save</button>&nbsp;
+                        <button name="btnVariableClear" class="button" type="submit">Clear</button>&nbsp;
+                        <button name="btnVariableClose" class="button" type="submit">Close</button>
+                        @Html.HiddenFor(m => m.VariableId)
+                    </td>
+                </tr>
+            </table>
+            @Html.Raw(Model.VariableList)
+        </div>
+
+        <div style="position:absolute; top:0; right:0; background-color:black; opacity: 0.2;
+                height:100%; width:100%; display:@Model.ShowJob;">
+        </div>
+        <div style="background-color:white; position:absolute; top:50px; left:100px; display:@Model.ShowJob;">
+            <table>
+                <tr>
+                    <td colspan="2"><h3>Jobs</h3></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="bt" style="color:red;">&nbsp;@Html.Raw(Model.JobMessage)</td>
+                </tr>
+                <tr>
+                    <td class="bt">Job Name</td>
+                    <td class="gfill">@Html.TextBoxFor(m => m.JobName, new { style="width:500px;", maxlength=100 })</td>
+                </tr>
+                <tr>
+                    <td class="bt">Is Active</td>
+                    <td class="gfill">@Html.CheckBoxFor(m => m.JobIsActive)</td>
+                </tr>
+                <tr>
+                    <td class="bt">Sort Order</td>
+                    <td class="gfill">@Html.TextBoxFor(m => m.JobSortOrder, new { style="width:60px;", maxlength=5 })</td>
+                </tr>
+                <tr>
+                    <td class="bt">Max Instances</td>
+                    <td class="gfill">@Html.TextBoxFor(m => m.MaxInstances, new { style = "width:60px;", maxlength = 5 })</td>
+                </tr>
+                <tr>
+                    <td class="bt">Interval</td>
+                    <td class="gfill">@Html.DropDownListFor(m => m.JobIntervalId, Model.Intervals)</td>
+                </tr>
+                <tr>
+                    <td class="bt">Agent</td>
+                    <td class="gfill">@Html.DropDownListFor(m => m.JobAgentId, Model.Agents)</td>
+                </tr>
+                <tr>
+                    <td class="bt">Operator</td>
+                    <td class="gfill">@Html.DropDownListFor(m => m.JobOperatorId, Model.Operators)</td>
+                </tr>
+                <tr>
+                    <td class="bt"></td>
+                    <td class="bt">
+                        <button name="btnJobSave" class="button" type="submit" style="display:@Model.ShowSaveButtons;">Save</button>&nbsp;
+                        <button name="btnJobClear" class="button" type="submit">Clear</button>&nbsp;
+                        <button name="btnJobClose" class="button" type="submit">Close</button>&nbsp;
+                        <button name="btnJobTrigger" class="button" type="submit" style="display:@Model.ShowJobButtons;">Start Job</button>
+                        <button name="btnIntervals" class="button" type="submit" style="display:@Model.ShowJobButtons;">Intervals</button>&nbsp;
+                        <button name="btnTasks" class="button" type="submit" style="display:@Model.ShowJobButtons;">Tasks</button>
+                        @Html.HiddenFor(m => m.JobId)
+                    </td>
+                </tr>
+            </table>
+            @Html.Raw(Model.JobList)
+        </div>
+
+        <div style="position:absolute; top:0; right:0; background-color:black; opacity: 0.2;
+                height:100%; width:100%; display:@Model.ShowInterval;">
+        </div>
+        <div style="background-color:white; position:absolute; top:50px; left:100px; display:@Model.ShowInterval;">
+            <table>
+                <tr>
+                    <td colspan="2"><h3>Intervals</h3></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="bt" style="color:red;">&nbsp;@Html.Raw(Model.IntervalMessage)</td>
+                </tr>
+                <tr>
+                    <td class="bt">Interval Name</td>
+                    <td class="gfill">@Html.TextBoxFor(m => m.IntervalName, new { style="width:500px;", maxlength=50 })</td>
+                </tr>
+                <tr>
+                    <td class="bt">Interval</td>
+                    <td class="gfill">@Html.TextBoxFor(m => m.Interval, new { style = "width:100px;", maxlength = 10 })</td>
+                </tr>
+                <tr>
+                    <td class="bt">Interval Type</td>
+                    <td class="gfill">@Html.DropDownListFor(m => m.IntervalType, Model.IntervalTypes)</td>
+                </tr>
+                <tr>
+                    <td class="bt">Is Active</td>
+                    <td class="gfill">@Html.CheckBoxFor(m => m.IntervalIsActive)</td>
+                </tr>
+                <tr>
+                    <td class="bt">Occurrences</td>
+                    <td class="gfill">@Html.TextBoxFor(m => m.Occurrences, new { style = "width:100px;", maxlength = 10 })</td>
+                </tr>
+                <tr>
+                    <td class="bt">Start Time</td>
+                    <td class="gfill">@Html.TextBoxFor(m => m.IntervalStartTime, new { style="width:100px;", maxlength=10 })</td>
+                </tr>
+                <tr>
+                    <td class="bt">End Time</td>
+                    <td class="gfill">@Html.TextBoxFor(m => m.IntervalEndTime, new { style="width:100px;", maxlength=10 })</td>
+                </tr>
+                <tr>
+                    <td class="bt">Exclusion Start</td>
+                    <td class="gfill">@Html.TextBoxFor(m => m.IntervalExclusionStart, new { style="width:100px;", maxlength=10 })</td>
+                </tr>
+                <tr>
+                    <td class="bt">Exclusion End</td>
+                    <td class="gfill">@Html.TextBoxFor(m => m.IntervalExclusionEnd, new { style = "width:100px;", maxlength = 10 })</td>
+                </tr>
+                <tr>
+                    <td class="bt">Repeat Minutes</td>
+                    <td class="gfill">@Html.TextBoxFor(m => m.IntervalRepeatMinutes, new { style = "width:100px;", maxlength = 10 })</td>
+                </tr>
+                <tr>
+                    <td class="bt"></td>
+                    <td class="bt">
+                        <button name="btnIntervalSave" class="button" type="submit" style="display:@Model.ShowSaveButtons;">Save</button>&nbsp;
+                        <button name="btnIntervalClear" class="button" type="submit">Clear</button>&nbsp;
+                        <button name="btnIntervalClose" class="button" type="submit">Close</button>
+                        @Html.HiddenFor(m => m.IntervalId)
+                    </td>
+                </tr>
+            </table>
+            @Html.Raw(Model.IntervalList)
+        </div>
+
+        <div style="position:absolute; top:0; right:0; background-color:black; opacity: 0.2;
+                height:100%; width:100%; display:@Model.ShowTask;">
+        </div>
+        <div style="background-color:white; position:absolute; top:50px; left:100px; display:@Model.ShowTask;">
+            <table>
+                <tr>
+                    <td colspan="2"><h3>Tasks</h3></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="bt" style="color:red;">&nbsp;@Html.Raw(Model.TaskMessage)</td>
+                </tr>
+                <tr>
+                    <td class="bt">Task Name</td>
+                    <td class="gfill">@Html.TextBoxFor(m => m.TaskName, new { style="width:500px;", maxlength=100 })</td>
+                </tr>
+                <tr>
+                    <td class="bt">Is Active</td>
+                    <td class="gfill">@Html.CheckBoxFor(m => m.TaskIsActive)</td>
+                </tr>
+                <tr>
+                    <td class="bt">Sort Order</td>
+                    <td class="gfill">@Html.TextBoxFor(m => m.TaskSortOrder, new { style="width:60px;", maxlength=5 })</td>
+                </tr>
+                <tr>
+                    <td class="bt">Task Type</td>
+                    <td class="gfill">@Html.DropDownListFor(m => m.TaskTypeId, Model.TaskTypes, new { onchange = "$(this).closest('form').submit()" })</td>
+                </tr>
+                <tr>
+                    <td class="bt">Task Information</td>
+                    <td class="gfill">
+                        <fieldset style="display:@Model.ShowExecuteProgram;">
+                            <legend>Execute Program</legend>
+                            <table>
+                                <tr>
+                                    <td class="bt">Path</td>
+                                    <td class="gfill">@Html.TextBoxFor(m => m.ExecutePath, new { style="width:500px;", maxlength=256 })</td>
+                                </tr>
+                                <tr>
+                                    <td class="bt">Command</td>
+                                    <td class="gfill">@Html.TextBoxFor(m => m.ExecuteCommand, new { style = "width:500px;", maxlength = 150 })</td>
+                                </tr>
+                                <tr>
+                                    <td class="bt">Parameters</td>
+                                    <td class="gfill">@Html.TextAreaFor(m => m.ExecuteParameters, new { style = "width:500px; height:100px;", maxlength = 2000 })</td>
+                                </tr>
+                            </table>
+                        </fieldset>
+                        <fieldset style="display:@Model.ShowSQLTask;">
+                            <legend>SQL Command</legend>
+                            <table>
+                                <tr>
+                                    <td class="bt">Database Connection</td>
+                                    <td class="gfill">@Html.TextBoxFor(m => m.SQLConnection, new { style="width:500px;", maxlength=200 })</td>
+                                </tr>
+                                <tr>
+                                    <td class="bt">SQL Command</td>
+                                    <td class="gfill">@Html.TextAreaFor(m => m.SQLCommand, new { style="width:500px; height:100px;", maxlength=10000 })</td>
+                                </tr>
+                            </table>
+                        </fieldset>
+                        <fieldset style="display:@Model.ShowSPTask;">
+                            <legend>Stored Procedure</legend>
+                            <table>
+                                <tr>
+                                    <td class="bt">Database Connection</td>
+                                    <td class="gfill">@Html.TextBoxFor(m => m.SPConnection, new { style="width:500px;", maxlength=200 })</td>
+                                </tr>
+                                <tr>
+                                    <td class="bt">Procedure Name</td>
+                                    <td class="gfill">@Html.TextBoxFor(m => m.SPName, new { style="width:500px;", maxlength=50 })</td>
+                                </tr>
+                                <tr>
+                                    <td class="bt">Parameters</td>
+                                    <td class="bt">
+                                        <table>
+                                            <tr>
+                                                <td class="bt" colspan="2" style="color:red;">&nbsp;@Html.Raw(Model.SPMessage)</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="bt">Parameter Name</td>
+                                                <td class="gfill">@Html.TextBoxFor(m => m.SPParameter, new { style="width:500px;", maxlength=100 })</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="bt">Data Type</td>
+                                                <td class="gfill">@Html.DropDownListFor(m => m.SPDataType, Model.DataTypes)</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="bt">Parameter Value</td>
+                                                <td class="gfill">@Html.TextBoxFor(m => m.SPValue, new { style="width:500px;", maxlength=20000 })</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="bt"></td>
+                                                <td class="bt">
+                                                    <button name="btnSPSave" class="button" type="submit">Save</button>&nbsp;
+                                                    <button name="btnSPClear" class="button" type="submit">Clear</button>
+                                                    @Html.HiddenFor(m => m.SPParameters)
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        @Html.Raw(Model.SPList)
+                                    </td>
+                                </tr>
+                            </table>
+                        </fieldset>
+                        <fieldset style="display:@Model.ShowMailTask">
+                            <legend>Send Email</legend>
+                            <table>
+                                <tr>
+                                    <td class="bt">From Email Address</td>
+                                    <td class="gfill">@Html.TextBoxFor(m => m.MailFrom, new { style="width:500px;", maxlength=100 })</td>
+                                </tr>
+                                <tr>
+                                    <td class="bt">Subject</td>
+                                    <td class="gfill">@Html.TextBoxFor(m => m.MailSubject, new { style="width:500px;", maxlength=100 })</td>
+                                </tr>
+                                <tr>
+                                    <td class="bt">To Email Address</td>
+                                    <td class="gfill">@Html.TextAreaFor(m => m.MailTo, new { style="width:500px; height:50px;", maxlength=2000 })</td>
+                                </tr>
+                                <tr>
+                                    <td class="bt">Body</td>
+                                    <td class="gfill">@Html.TextAreaFor(m => m.MailBody, new { style="width:500px; height:200px;", maxlength=30000 })</td>
+                                </tr>
+                            </table>
+                        </fieldset>
+                        <fieldset style="display:@Model.ShowFileCopyTask;">
+                            <legend>Copy File(s)</legend>
+                            <table>
+                                <tr>
+                                    <td class="bt">Source Path</td>
+                                    <td class="gfill">@Html.TextBoxFor(m => m.FileCopySource, new { style="width:500px;", maxlength=256 })</td>
+                                </tr>
+                                <tr>
+                                    <td class="bt">Destination Path</td>
+                                    <td class="gfill">@Html.TextBoxFor(m => m.FileCopyDestination, new { style="width:500px;", maxlength=256 })</td>
+                                </tr>
+                                <tr>
+                                    <td class="bt">Files To Copy</td>
+                                    <td class="gfill">@Html.TextBoxFor(m => m.FileCopyFiles, new { style="width:500px;", maxlength=2000 })</td>
+                                </tr>
+                            </table>
+                        </fieldset>
+                        <fieldset style="display:@Model.ShowScriptTask;">
+                            <legend>VB Script</legend>
+                            <table>
+                                <tr>
+                                    <td class="bt">Script Code</td>
+                                    <td class="gfill">@Html.TextAreaFor(m => m.ScriptCode, new { style = "width:500px; height:250px;", maxlength = 30000 })</td>
+                                </tr>
+                            </table>
+                        </fieldset>
+                        <fieldset style="display:@Model.ShowDTS;">
+                            <legend>SQL DTS Task</legend>
+                            <table>
+                                <tr>
+                                    <td class="bt">Package Path</td>
+                                    <td class="gfill">@Html.TextBoxFor(m => m.DTSPath, new { style="width:500px;", maxlength=512 })</td>
+                                </tr>
+                            </table>
+                        </fieldset>
+                        <fieldset style="display:@Model.ShowDLL;">
+                            <legend>DLL Execute Method</legend>
+                            <table>
+                                <tr>
+                                    <td class="bt">DLL Path</td>
+                                    <td class="gfill">@Html.TextBoxFor(m => m.DLLPath, new { style="width:500px;", maxlength=512 })</td>
+                                </tr>
+                                <tr>
+                                    <td class="bt">Class</td>
+                                    <td class="gfill">@Html.TextBoxFor(m => m.DLLClass, new { style="width:500px;", maxlength=128 })</td>
+                                </tr>
+                                <tr>
+                                    <td class="bt">Method</td>
+                                    <td class="gfill">@Html.TextBoxFor(m => m.DLLMethod, new { style="width:500px;", maxlength=128 })</td>
+                                </tr>
+                            </table>
+                        </fieldset>
+                        @Html.HiddenFor(m => m.ShowExecuteProgram)
+                        @Html.HiddenFor(m => m.ShowFileCopyTask)
+                        @Html.HiddenFor(m => m.ShowMailTask)
+                        @Html.HiddenFor(m => m.ShowScriptTask)
+                        @Html.HiddenFor(m => m.ShowSPTask)
+                        @Html.HiddenFor(m => m.ShowSQLTask)
+                        @Html.HiddenFor(m => m.ShowDTS)
+                        @Html.HiddenFor(m => m.ShowDLL)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="bt"></td>
+                    <td class="bt">
+                        <button name="btnTaskSave" class="button" type="submit">Save</button>&nbsp;
+                        <button name="btnTaskClear" class="button" type="submit">Clear</button>&nbsp;
+                        <button name="btnTaskClose" class="button" type="submit">Close</button>
+                        @Html.HiddenFor(m => m.TaskId)
+                    </td>
+                </tr>
+            </table>
+            @Html.Raw(Model.TaskList)
+        </div>
+
+    }
+</div>

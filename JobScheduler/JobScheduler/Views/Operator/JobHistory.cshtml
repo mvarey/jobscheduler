@@ -1,0 +1,116 @@
+﻿@model HistoryModel
+
+@{
+    ViewBag.Title = "Job History";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div style="display:@Model.ShowHistory;">
+    @using (Html.BeginForm("JobHistory", "Operator", FormMethod.Post))
+    {
+        <h2>Job History</h2>
+        <table>
+            <tr>
+                <td colspan="2" style="color:red;">&nbsp;@Html.Raw(Model.HistoryMessage)</td>
+            </tr>
+            <tr>
+                <td class="bt">Queue</td>
+                <td class="gfill">@Html.DropDownListFor(m => m.QueueID, Model.Queues, new { onchange = "$(this).closest('form').submit()" })</td>
+                <td rowspan="4">
+                    @Html.HiddenFor(m => m.ShowJobInfo)
+                    <table style="display:@Model.ShowJobInfo;">
+                        <tr>
+                            <td class="bt">Scheduled Time</td>
+                            <td class="gfill">@Html.Raw(Model.ExecutionScheduled)</td>
+                        </tr>
+                        <tr>
+                            <td class="bt">Started</td>
+                            <td class="gfill">@Html.Raw(Model.ExecutionStart)</td>
+                        </tr>
+                        <tr>
+                            <td class="bt">Ended</td>
+                            <td class="gfill">@Html.Raw(Model.ExecutionEnd)</td>
+                        </tr>
+                        <tr>
+                            <td class="bt">Started By</td>
+                            <td class="gfill">@Html.Raw(Model.ExecutedBy)</td>
+                        </tr>
+                        <tr>
+                            <td class="bt"></td>
+                            <td class="bt">
+                                <button name="btnShowTasks" class="button" type="submit">Show Tasks</button>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td class="bt">Folder</td>
+                <td class="gfill">@Html.DropDownListFor(m => m.FolderID, Model.Folders, new { onchange = "$(this).closest('form').submit()" })</td>
+            </tr>
+            <tr>
+                <td class="bt">Job</td>
+                <td class="gfill">@Html.DropDownListFor(m => m.JobID, Model.Jobs, new { onchange = "$(this).closest('form').submit()" })</td>
+            </tr>
+            <tr>
+                <td colspan="2">&nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="2">&nbsp;</td>
+            </tr>
+        </table>
+        @Html.Raw(Model.JobHistoryList)
+
+        <div style="position:absolute; top:0; right:0; background-color:black; opacity: 0.2;
+                height:100%; width:100%; display:@Model.ShowTaskInfo;">
+        </div>
+        <div style="background-color:white; position:absolute; top:50px; left:100px; display:@Model.ShowTaskInfo;">
+            <fieldset>
+                <legend>Task Information</legend>
+                <table>
+                    <tr>
+                        <td class="bt">Task Name</td>
+                        <td class="gfill">@Model.TaskName</td>
+                    </tr>
+                    <tr>
+                        <td class="bt">Execution Server</td>
+                        <td class="gfill">@Model.ServerName</td>
+                    </tr>
+                    <tr>
+                        <td class="bt">Execution Output</td>
+                        <td class="gfill">@Html.Raw(Model.StandardOutput)</td>
+                    </tr>
+                    <tr>
+                        <td class="bt">Execution Error(s)</td>
+                        <td class="gfill">@Html.Raw(Model.StandardError)</td>
+                    </tr>
+                    <tr>
+                        <td class="bt">Start Time</td>
+                        <td class="gfill">@Html.Raw(Model.TaskExecutionStart)</td>
+                    </tr>
+                    <tr>
+                        <td class="bt">End Time</td>
+                        <td class="gfill">@Html.Raw(Model.TaskExecutionEnd)</td>
+                    </tr>
+                    <tr>
+                        <td class="bt">Command Line</td>
+                        <td class="gfill">@Html.Raw(Model.TaskCommandLine)</td>
+                    </tr>
+                    <tr>
+                        <td class="bt">Scheduled Start</td>
+                        <td class="gfill">@Html.Raw(Model.TaskScheduledStart)</td>
+                    </tr>
+                    <tr>
+                        <td class="bt"></td>
+                        <td class="bt">
+                            <button name="btnTaskClose" class="button" type="submit">Close</button>
+                        </td>
+                    </tr>
+                </table>
+                @Html.Raw(Model.TaskHistoryList)
+                @Html.HiddenFor(m => m.ShowTaskInfo)
+                @Html.HiddenFor(m => m.JobLogID)
+            </fieldset>
+        </div>
+    }
+</div>

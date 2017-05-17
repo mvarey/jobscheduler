@@ -1,0 +1,67 @@
+﻿@model SchedulerOperatorModel
+
+@{
+    ViewBag.Title = "Scheduler Operator";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div style="display:@Model.ShowOperators;">
+    @using (Html.BeginForm("SchedulerUser", "Scheduler", FormMethod.Post))
+    {
+        <h2>Scheduler Operator</h2>
+        <table>
+            <tr>
+                <td class="bt" colspan="2" style="color:red;">&nbsp;@Html.Raw(Model.OperatorMessage)</td>
+            </tr>
+            <tr>
+                <td class="bt">Operator Group Name</td>
+                <td class="gfill">@Html.TextBoxFor(m => m.OperatorName, new { style = "width:500px;", maxlength = 50 })</td>
+            </tr>
+            <tr>
+                <td class="bt">Is Active</td>
+                <td class="gfill">@Html.CheckBoxFor(m => m.OperatorIsActive)</td>
+            </tr>
+            <tr>
+                <td class="bt"></td>
+                <td class="bt">
+                    <button name="btnOperatorSave" class="button" type="submit">Save</button>&nbsp;
+                    <button name="btnOperatorClear" class="button" type="submit">Clear</button>&nbsp;
+                    <button name="btnOperatorUsers" class="button" type="submit" style="display:@Model.ShowUserButton;">Users</button>
+                    @Html.HiddenFor(m => m.OperatorID)
+                    @Html.HiddenFor(m => m.ShowUserButton)
+                    @Html.HiddenFor(m => m.ShowUsers)
+                </td>
+            </tr>
+        </table>
+        @Html.Raw(Model.OperatorList)
+
+        <div style="position:absolute; top:0; right:0; background-color:black; opacity: 0.2;
+                height:100%; width:100%; display:@Model.ShowUsers;">
+        </div>
+        <div style="background-color:white; position:absolute; top:50px; left:100px; display:@Model.ShowUsers;">
+            <table>
+                <tr>
+                    <td class="bt" colspan="2" style="color:red;">&nbsp;@Html.Raw(Model.OperatorUserMessage)</td>
+                </tr>
+                <tr>
+                    <td class="bt">User</td>
+                    <td class="gfill">@Html.DropDownListFor(m => m.UserID, Model.Users)</td>
+                </tr>
+                <tr>
+                    <td class="bt">Is Active</td>
+                    <td class="gfill">@Html.CheckBoxFor(m => m.OperatorUserIsActive)</td>
+                </tr>
+                <tr>
+                    <td class="bt"></td>
+                    <td class="bt">
+                        <button name="btnUserSave" class="button" type="submit">Save</button>&nbsp;
+                        <button name="btnUserClear" class="button" type="submit">Clear</button>&nbsp;
+                        <button name="btnUserClose" class="button" type="submit">Close</button>
+                        @Html.HiddenFor(m => m.OperatorUserID)
+                    </td>
+                </tr>
+            </table>
+            @Html.Raw(Model.OperatorUserList)
+        </div>
+    }
+</div>

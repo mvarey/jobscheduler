@@ -1,0 +1,63 @@
+﻿@model SchedulerServerModel
+
+@{
+    ViewBag.Title = "SchedulerServer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div style="display:@Model.ShowServer;">
+@using (Html.BeginForm("SchedulerServer", "Scheduler", FormMethod.Post))
+{
+    <h2>Scheduler Server</h2>
+    <table>
+        <tr>
+            <td colspan="2" class="bt" style="color:red;">&nbsp;@Html.Raw(Model.ServerMessage)</td>
+        </tr>
+        <tr>
+            <td class="bt">Server Name</td>
+            <td class="gfill">@Html.TextBoxFor(m => m.ServerName, new { style = "width:500px;", maxlength = 50 })</td>
+        </tr>
+        <tr>
+            <td class="bt">Is Active</td>
+            <td class="gfill">@Html.CheckBoxFor(m => m.IsActive)</td>
+        </tr>
+        <tr>
+            <td class="bt">Agent Enabled</td>
+            <td class="gfill">@Html.CheckBoxFor(m => m.AgentEnabled)</td>
+        </tr>
+        <tr>
+            <td class="bt">Max Threads</td>
+            <td class="gfill">@Html.TextBoxFor(m => m.MaxThreads)</td>
+        </tr>
+        <tr>
+            <td class="bt">Mail Server</td>
+            <td class="gfill">@Html.TextBoxFor(m => m.MailServer, new { style = "width:500px;", maxlength = 50 })</td>
+        </tr>
+        <tr>
+            <td class="bt">Mail ID</td>
+            <td class="gfill">@Html.TextBoxFor(m => m.MailID, new { style = "width:500px;", maxlength = 100 })</td>
+        </tr>
+        <tr>
+            <td class="bt">Mail Password</td>
+            <td class="gfill">@Html.TextBoxFor(m => m.MailPassword, new { style = "width:500px;", maxlength = 50 })</td>
+        </tr>
+        <tr>
+            <td class="bt">IP4 Address</td>
+            <td class="gfill">@Html.TextBoxFor(m => m.MachineIP4Address, new { style = "width:200px;", maxlength = 15 })</td>
+        </tr>
+        <tr>
+            <td class="bt">IP6 Address</td>
+            <td class="gfill">@Html.TextBoxFor(m => m.MachineIP6Address, new { style = "width:500px;", maxlength = 50 })</td>
+        </tr>
+        <tr>
+            <td class="bt"></td>
+            <td class="bt">
+                <button name="btnServerSave" class="button" type="submit">Save</button>&nbsp;
+                <button name="btnServerClear" class="button" type="submit">Clear</button>
+                @Html.HiddenFor(m => m.ServerID)
+            </td>
+        </tr>
+    </table>
+    @Html.Raw(Model.ServerList)
+}
+</div>

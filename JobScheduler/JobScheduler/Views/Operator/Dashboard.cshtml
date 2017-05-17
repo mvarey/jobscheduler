@@ -1,0 +1,81 @@
+﻿@model DashboardModel
+
+@{
+    ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+    google.charts.load('current', { 'packages': ['timeline'] });
+    google.charts.setOnLoadCallback(drawCharts);
+
+    function drawCharts()
+    {
+        var Scheduled = document.getElementById('scheduled');
+        var ScheduledChart = new google.visualization.Timeline(Scheduled);
+        var ScheduledData = new google.visualization.DataTable();
+        ScheduledData.addColumn({ type: 'string', id: 'Job' });
+        ScheduledData.addColumn({ type: 'date', id: 'Start' });
+        ScheduledData.addColumn({ type: 'date', id: 'End' });
+        ScheduledData.addRows([@Html.Raw(Model.ScheduledJobs)]);
+        var Options = { timeline: { singleColor: 'blue' } };
+        ScheduledChart.draw(ScheduledData, Options);
+
+        var ActiveJobs = document.getElementById('active');
+        var ActiveChart = new google.visualization.Timeline(ActiveJobs);
+        var ActiveData = new google.visualization.DataTable();
+        ActiveData.addColumn({ type: 'string', id: 'Job' });
+        ActiveData.addColumn({ type: 'date', id: 'Start' });
+        ActiveData.addColumn({ type: 'date', id: 'End' });
+        ActiveData.addRows([@Html.Raw(Model.ActiveJobs)]);
+        if (ActiveData.length > 0) {
+            ActiveChart.draw(ActiveData, Options);
+        }
+
+        var HistoryJobs = document.getElementById('history');
+        var HistoryChart = new google.visualization.Timeline(HistoryJobs);
+        var HistoryData = new google.visualization.DataTable();
+        HistoryData.addColumn({ type: 'string', id: 'Job' });
+        HistoryData.addColumn({ type: 'date', id: 'Start' });
+        HistoryData.addColumn({ type: 'date', id: 'End' });
+        HistoryData.addRows([@Html.Raw(Model.HistoryJobs)]);
+        if (HistoryData.length > 0) {
+            HistoryChart.draw(HistoryData, Options);
+        }
+
+        var ErrorJobs = document.getElementById('error');
+        var ErrorChart = new google.visualization.Timeline(ErrorJobs);
+        var ErrorData = new google.visualization.DataTable();
+        ErrorData.addColumn({ type: 'string', id: 'Job' });
+        ErrorData.addColumn({ type: 'date', id: 'Start' });
+        ErrorData.addColumn({ type: 'date', id: 'End' });
+        ErrorData.addRows([@Html.Raw(Model.ErrorJobs)]);
+        if (ErrorData.length > 0) {
+            ErrorChart.draw(ErrorData, Options);
+        }
+    }
+
+</script>
+
+<div style="display:@Model.ShowDashboard;">
+    @using (Html.BeginForm("Dashboard", "Operator", FormMethod.Post))
+    {
+        <h2>Dashboard</h2>
+        <table>
+            <tr>
+                <td colspan="2" style="color:red;">&nbsp;@Html.Raw(Model.DashboardMessage)</td>
+            </tr>
+        </table>
+        <div style="height:740px; overflow:auto;">
+            <h3><b>Scheduled Jobs</b></h3>
+            <div id="scheduled" ></div>
+            <h3><b>Active Jobs</b></h3>
+            <div id="active"></div>
+            <h3><b>Recent Jobs</b></h3>
+            <div id="history" ></div>
+            <h3><b>Recent Failed Jobs</b></h3>
+            <div id="error" ></div>
+        </div>
+    }
+</div>
